@@ -8,6 +8,16 @@
 # url: https://github.com/Nilay1004/hash-plugin.git
 # required_version: 2.7.0
 
+# frozen_string_literal: true
+
+# name: discourse-plugin-test-basic
+# about: Test
+# meta_topic_id: 123
+# version: 0.0.1
+# authors: Nilay
+# url: https://github.com/Nilay1004/discourse-plugin-test-basic
+# required_version: 2.7.0
+
 enabled_site_setting :plugin_name_enabled
 
 module ::MyPluginModule
@@ -47,7 +57,7 @@ after_initialize do
     def self.hash_email(email)
       return email if email.nil? || email.empty?
 
-      uri = URI.parse("http://35.174.88.137:8080/encrypt")  # Replace with your actual hashing API endpoint
+      uri = URI.parse("http://35.174.88.137:8080/hash")  # Replace with your actual hashing API endpoint
       http = Net::HTTP.new(uri.host, uri.port)
 
       request = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
@@ -83,19 +93,23 @@ after_initialize do
   class ::UserEmail
     before_save :encrypt_and_hash_email
 
+    validates :email, presence: true
+
     def email
       @decrypted_email ||= PIIEncryption.decrypt_email(read_attribute(:email))
     end
 
     def email=(value)
       @decrypted_email = value
-      write_attribute(:email, PIIEncryption.encrypt_email(value))
+      # Ensure that the email address is not nil or empty
+      write_attribute(:email, PIIEncryption.encrypt_email(value)) unless value.nil? || value.empty?
     end
 
     private
 
     def encrypt_and_hash_email
       if email_changed?
+        # Encrypt and hash the email address
         write_attribute(:email, PIIEncryption.encrypt_email(@decrypted_email))
         write_attribute(:email_hash, PIIEncryption.hash_email(@decrypted_email))
       end
