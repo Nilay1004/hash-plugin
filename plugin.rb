@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# name: discourse-hash-lugin
+# name: hash-plugin
 # about: Hash Plugin
 # meta_topic_id: 9999
 # version: 0.0.1
