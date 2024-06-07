@@ -20,7 +20,7 @@ after_initialize do
       def hash_email(email)
         return email if email.nil? || email.empty?
 
-        uri = URI.parse("http://your-hash-api-endpoint")  # Replace with your actual hashing API endpoint
+        uri = URI.parse("http://35.174.88.137:8080/hash")  # Replace with your actual hashing API endpoint
         http = Net::HTTP.new(uri.host, uri.port)
 
         request = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
